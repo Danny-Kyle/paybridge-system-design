@@ -1,0 +1,550 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "PayBridge Remittance Workflow",
+    "version": "1.0.0",
+    "description": "Focused contract for the local and test remittance workflow. A quote is obtained through the separate FX API. Funding and payout are simulated."
+  },
+  "paths": {
+    "/api/v1/remittances": {
+      "post": {
+        "operationId": "createRemittance",
+        "summary": "Create a remittance intent",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Remittance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Workflow conflict"
+          },
+          "401": {
+            "description": "Bearer token required"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sourceUsdMinor": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1
+                  },
+                  "beneficiaryName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "bankCode": {
+                    "type": "string",
+                    "pattern": "^[0-9]{3,6}$"
+                  },
+                  "accountNumber": {
+                    "type": "string",
+                    "pattern": "^[0-9]{10}$"
+                  }
+                },
+                "required": [
+                  "sourceUsdMinor",
+                  "beneficiaryName",
+                  "bankCode",
+                  "accountNumber"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-required-role": "CUSTOMER"
+      }
+    },
+    "/api/v1/remittances/{id}": {
+      "get": {
+        "operationId": "readRemittance",
+        "summary": "Read a remittance owned by the caller",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Remittance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Workflow conflict"
+          },
+          "401": {
+            "description": "Bearer token required"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-required-role": "CUSTOMER"
+      }
+    },
+    "/api/v1/remittances/{id}/convert": {
+      "post": {
+        "operationId": "convertRemittance",
+        "summary": "Convert with an existing FX quote and queue payout",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Remittance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Workflow conflict"
+          },
+          "401": {
+            "description": "Bearer token required"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quoteId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "quoteId"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-required-role": "CUSTOMER"
+      }
+    },
+    "/api/v1/remittances/{id}/retry": {
+      "post": {
+        "operationId": "retryRemittance",
+        "summary": "Retry an eligible failed payout",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Remittance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Workflow conflict"
+          },
+          "401": {
+            "description": "Bearer token required"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-required-role": "CUSTOMER"
+      }
+    },
+    "/api/v1/local/remittances/{id}/funding": {
+      "post": {
+        "operationId": "confirmFunding",
+        "summary": "Confirm simulated funding",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Remittance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Workflow conflict"
+          },
+          "401": {
+            "description": "Bearer token required"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fundingReference": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "sourceUsdMinor": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "fundingReference",
+                  "sourceUsdMinor"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-required-role": "TREASURY"
+      }
+    },
+    "/api/v1/local/remittances/{id}/process": {
+      "post": {
+        "operationId": "processPayout",
+        "summary": "Process a simulated payout attempt",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Remittance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Workflow conflict"
+          },
+          "401": {
+            "description": "Bearer token required"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-required-role": "TREASURY"
+      }
+    },
+    "/api/v1/local/remittances/{id}/outcome": {
+      "post": {
+        "operationId": "setOutcome",
+        "summary": "Set the simulated payout outcome",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Workflow conflict"
+          },
+          "401": {
+            "description": "Bearer token required"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "outcome": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "FAILED",
+                      "UNKNOWN"
+                    ]
+                  }
+                },
+                "required": [
+                  "outcome"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-required-role": "TREASURY"
+      }
+    },
+    "/api/v1/local/remittances/recover": {
+      "post": {
+        "operationId": "recoverPayouts",
+        "summary": "Run operator-triggered recovery",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Workflow conflict"
+          },
+          "401": {
+            "description": "Bearer token required"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-required-role": "TREASURY"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Remittance": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceUsdMinor": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "destinationNgnMinor": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payoutReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "attempt": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "customerId",
+          "sourceUsdMinor",
+          "destinationNgnMinor",
+          "status",
+          "payoutReference",
+          "attempt"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local development"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram id="c4-component-remittance-path" name="component-remittance-path">
+    <mxGraphModel grid="1" page="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="Remittance controllers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f1ff;strokeColor=#426995;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="50" y="200" width="205" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="Remittance service and payout worker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f1ff;strokeColor=#426995;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="325" y="200" width="205" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="Ledger and repositories" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f1ff;strokeColor=#426995;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="600" y="200" width="205" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="Simulated payout adapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f1ff;strokeColor=#426995;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="875" y="200" width="205" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="Authenticated operation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;labelBackgroundColor=#ffffff;" parent="1" edge="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="State and journal writes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;labelBackgroundColor=#ffffff;" parent="1" edge="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="Payout reference" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;labelBackgroundColor=#ffffff;" parent="1" edge="1" source="3" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
